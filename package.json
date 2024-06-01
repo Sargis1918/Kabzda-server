@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "scripts":{
+  "scripts": {
     "watch": "tsc -w",
     "dev": " nodemon --inspect dist/index.js",
     "build": "tsc",
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
     "express": "^4.19.2"
   },
   "devDependencies": {

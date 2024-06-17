@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 
 export const app = express();
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 3000;
 
 export const HTTP_STATUSES = {
     ok_200: 200,

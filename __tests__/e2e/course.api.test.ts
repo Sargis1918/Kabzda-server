@@ -1,46 +1,52 @@
-import exp from "constants";
-import { app, HTTP_STATUSES } from "../../src";
+
+import { app, HTTP_STATUSES, server } from "../../src";
 import request from 'supertest'
-describe('/address',()=>{
+import { CourseCreateModel } from "../../src/models/CourseCreateModel";
+describe('/courses',()=>{
   beforeAll(async()=>{
     await request(app).delete('/__test__/data')
   })
   it('should return status 200 and empty array',async()=>{
-      const response= await request(app).get('/address');
+      const response= await request(app).get('/courses');
         expect(response.status).toBe(HTTP_STATUSES.ok_200)
         expect(response.body).toEqual([])
     })
-    it('should return status 200 and empty array',async()=>{
-      const response= await request(app).get('/address/00000');
+    it('should return status 404 and empty array',async()=>{
+      const response= await request(app).get('/courses/00000');
         expect(response.status).toBe(HTTP_STATUSES.not_found_404)
         
     })
     it('should`nt create course with correct input data',async()=>{
-      await request(app).post('/address') 
-      .send({title:""})
+      let data:CourseCreateModel={title:""}
+      await request(app).post('/courses') 
+      .send(data)
       expect(HTTP_STATUSES.bad_request_400)
       
-      const response= await request(app).get('/address');
+      const response= await request(app).get('/courses');
         expect(response.status).toBe(HTTP_STATUSES.ok_200)
         expect(response.body).toEqual([])
     })
+    let createdCourse:any= null
     it('should create course with correct input data',async()=>{
-      await request(app).post('/address') 
+      let data:CourseCreateModel={title:"komitas-2"}
+      await request(app).post('/courses') 
       
-      .send({title:"komitas-2"})
+      .send(data)
      expect(HTTP_STATUSES.created_201)
-     const response=await request(app).get('/address')
-     expect(response.body).toEqual([{id:expect.any(Number),title:'komitas-2'}])
+     const response=await request(app).get('/courses')
+      createdCourse=response.body
+     expect(createdCourse).toEqual([{id:expect.any(Number),title:data.title}])
   
      
     
       })
       it('should`nt update course with incorrect input data',async()=>{
-        await request(app).put('/product/3') 
-        .send({title:""})
+       let data:CourseCreateModel={title:""}
+        await request(app).put('/courses/'+createdCourse.id) 
+        .send(data)
         expect(HTTP_STATUSES.bad_request_400)
-        
-        
       })
-      
+      afterAll(done=>{
+        server.close() 
+        done()})
 })

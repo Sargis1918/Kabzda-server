@@ -1,5 +1,6 @@
 
-import { app, HTTP_STATUSES, server } from "../../src";
+import { app, } from "../../src/app";
+import { HTTP_STATUSES } from "../../src/utilite";
 import request from 'supertest'
 import { CourseCreateModel } from "../../src/models/CourseCreateModel";
 describe('/courses',()=>{
@@ -47,6 +48,6 @@ describe('/courses',()=>{
         expect(HTTP_STATUSES.bad_request_400)
       })
       afterAll(done=>{
-        server.close() 
-        done()})
+        done()
+      })
 })

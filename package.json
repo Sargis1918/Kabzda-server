@@ -7,7 +7,7 @@
     "watch": "tsc -w",
     "dev": " nodemon --inspect dist/src/index.js",
     "build": "tsc",
-    "test": "jest -o --watch --detectOpenHandles",
+    "test": "jest  --detectOpenHandles --no-cache",
     "start": "node dist/src/index.js"
   },
   "dependencies": {

@@ -6,6 +6,7 @@ import { UriParamsIdModel } from "../models/UriParamsidModel";
 import { CourseAPIModel } from "../models/CourseAPIModel";
 import {  DBType,Coursetypes} from "../db/db";
 import { HTTP_STATUSES } from "../utilite";
+import { repositories } from "../repositories/courses-repositories";
 
 
 
@@ -23,16 +24,12 @@ export const getCoursesRouter=(db:DBType)=>{
       });
       
       router.get("/", (req: RequestWithQuery<GetCursesQeryModel>, res: Response<CourseAPIModel[]>) => {
-        let foundCourses = db.courses;
-        if (req.query.title) {
-          let searchIndexOf = req.query.title.toString();
-          foundCourses = foundCourses.filter((p) => p.title.indexOf(searchIndexOf) > -1);
-        }
+        let foundCourses = repositories.courseFinderIndexOf(req.query.title)
         res.json(foundCourses.map(getCourseAPIModel));
       });
       
       router.get("/:id", (req: RequestWithParams<UriParamsIdModel>, res: Response) => {
-        let foundCourse = db.courses.find((p) => p.id === +req.params.id);
+        let foundCourse=repositories.courseFinder(req.params.id)
         if (!foundCourse) {
           res.sendStatus(HTTP_STATUSES.not_found_404);
         } else {
@@ -46,36 +43,29 @@ export const getCoursesRouter=(db:DBType)=>{
           res.sendStatus(HTTP_STATUSES.bad_request_400);
           return;
         }
-        let newCourse:Coursetypes = {
-          id: +new Date(),
-          title: req.body.title,
-          studentsCount:11,
-        };
-      
-        db.courses.push(newCourse);
+        let newCourse=repositories.coursePusher(req.body.title)
         res.status(HTTP_STATUSES.created_201).json(getCourseAPIModel(newCourse));
       });
       
       router.delete("/:id", (req: RequestWithParams<UriParamsIdModel>, res) => {
-        for (let i = 0; i < db.courses.length; i++) {
-          let parId = +req.params.id;
-          if (db.courses[i].id === parId) {
-            db.courses.splice(i, 1);
-            res.sendStatus(HTTP_STATUSES.no_content_204);
-            return;
-          }
+        let deletedCourse=repositories.courseDeleter(req.params.id)
+        if(deletedCourse){
+          res.sendStatus(HTTP_STATUSES.no_content_204);
+        }else{
+          res.sendStatus(HTTP_STATUSES.not_found_404);
         }
-        res.sendStatus(HTTP_STATUSES.not_found_404);
+        
+        
       });
       
       router.put("/:id", (req: RequestWithParamsAndBody<UriParamsIdModel,CourseCreateModel>, res: Response<CourseAPIModel>) => {
-        let course = db.courses.find((p) => p.id === +req.params.id);
-        if (course) {
+        let foundCourse=repositories.courseFinder(req.params.id)
+        if (foundCourse) {
           if (!req.body.title) {
             return res.status(HTTP_STATUSES.bad_request_400);
           }
-          course.title = req.body.title;
-          res.status(HTTP_STATUSES.ok_200).json(course);
+          foundCourse.title = req.body.title;
+          res.status(HTTP_STATUSES.ok_200).json(foundCourse);
         } else {
           res.sendStatus(HTTP_STATUSES.not_found_404);
         }

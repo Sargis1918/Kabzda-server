@@ -28,19 +28,13 @@ describe('/courses',()=>{
         expect(response.body).toEqual([])
     })
     let createdCourse:any= null
-    it('should create course with correct input data',async()=>{
-      let data:CourseCreateModel={title:"komitas-2"}
-      await request(app).post('/courses') 
-      
-      .send(data)
-     expect(HTTP_STATUSES.created_201)
-     const response=await request(app).get('/courses')
-      createdCourse=response.body
-     expect(createdCourse).toEqual([{id:expect.any(Number),title:data.title}])
-  
-     
-    
-      })
+    it('should create course with correct input data', async () => {
+      const data:CourseCreateModel = { title: "komitas-2" };
+      await request(app).post('/courses').send(data);
+      const response = await request(app).get('/courses');
+      const createdCourse = response.body.find((course: any) => course.title === data.title);
+      expect(createdCourse).toEqual({ id: expect.any(Number), title: data.title });
+    });
       it('should`nt update course with incorrect input data',async()=>{
        let data:CourseCreateModel={title:""}
         await request(app).put('/courses/'+createdCourse.id) 

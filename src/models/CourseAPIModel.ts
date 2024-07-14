@@ -4,4 +4,7 @@ export type CourseAPIModel={
    */ 
   id: number;
   title: string;
+  
+  
+  
 }

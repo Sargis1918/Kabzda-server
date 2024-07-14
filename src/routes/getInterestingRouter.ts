@@ -1,11 +1,11 @@
-import express,{ Request, Response } from "express"
+import express,{ NextFunction, Request, Response } from "express"
 import {  RequestWithParams,  RequestWithQuery } from "../types"
 import { GetCursesQeryModel } from "../models/GetCoursesQueryModels";
 import { UriParamsIdModel } from "../models/UriParamsidModel";
 import { CourseAPIModel } from "../models/CourseAPIModel";
 import {  DBType,Coursetypes} from "../db/db";
 import { HTTP_STATUSES } from "../utilite";
-
+import { requestCount } from "../app";
 
 
 export const getCourseAPIModel = (dbCourse: Coursetypes): CourseAPIModel => {
@@ -21,8 +21,14 @@ export const getInterestingRouter=(db:DBType)=>{
 
   
   router.get("/books", (req: RequestWithQuery<GetCursesQeryModel>, res: Response) => {
+      
+    //@ts-ignore
+    res.json({   title:req.blabla,
+      requestCount:requestCount
+
+    }).send(205)
         
-        res.json({title:'books'});
+        
       });
       
             router.get("/:id([0-9])", (req: RequestWithParams<UriParamsIdModel>, res: Response) => {

@@ -1,4 +1,4 @@
-import { requestCount } from "../app";
+
 
 export type Coursetypes = {
     id: number;

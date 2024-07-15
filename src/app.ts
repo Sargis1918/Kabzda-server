@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express  from "express";
 import { db } from "./db/db";
 import { getCoursesRouter } from "./routes/courses";
 import { getTestRouter } from "./routes/tests";
